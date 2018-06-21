@@ -1,0 +1,133 @@
+#enable_html_escaping()
+#if ($searchRequest)
+    #set ($urlPrefix = "${req.contextPath}/secure/IssueNavigator.jspa?reset=true")
+#end
+
+#macro(issueLine $issue)
+<td width=5%>#displayType($issue)</td>
+<td width=5% nowrap><a href="$req.contextPath/browse/$issue.getKey()">$issue.getKey()</a></td>
+<td nowrap width=5%>
+	#if ($issue.getPriorityObject())
+		#displayConstantIcon($issue.getPriorityObject())
+	#end
+</td>
+<td width=80%>
+    #if ($issue.isSubTask())
+        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
+        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
+    #end
+	#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
+    	$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))
+    #else
+    	<i>$issue.getSummary()*</i>
+    #end
+</td>
+<td nowrap width=5%>
+	$issue.getStatusObject().getName()
+</td>
+#end
+
+#macro(issueLineHtml $issue)
+	#if ($issue.getIssueType().getName().contains("Bug"))
+		#set ($icon = "fa-bug")
+	#else
+		#set ($icon = "fa-paper-plane")
+	#end
+	#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
+    	<li><span class="fa-li"><i class="fas $icon"></i></span>$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))</li>
+    #else
+    	<li><span class="fa-li"><i class="fas $icon"></i></span><i>$issue.getSummary()*</i></li>
+    #end
+#end
+
+<table width="100%" class="aui" id="single_groupby_report_table">
+    <thead>
+    <tr>
+        <th colspan="6">
+            <h2>$i18n.getText('report.reportbyversionandcomponent.mapper.filterid.name'): $textutils.htmlEncode($searchRequest.name)</h2>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        #foreach ($option in $statsGroup.entrySet())
+        <tr>
+            <th colspan="7" class="stat-heading">
+                <h3>#statHeading ($mapperType $option.key $customFieldManager "${urlPrefix}$!searchService.getQueryString($user, $statsGroup.getMapper().getSearchUrlSuffix($option.key, $searchRequest).getQuery())")</h3>
+            </th>
+        </tr>
+            #set ($components = $statsGroup.getComponents())
+            #if ($components.size() > 0)
+                #foreach ($component in $components)
+        <tr>
+            <td width="5%"> </td>
+            <td colspan="6">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
+        </tr>
+                	#set ($issues = $statsGroup.getIssuesByComponent($option.key, $component))
+		            #if ($issues.size() > 0)
+		                #foreach ($issue in $issues)
+		                <tr>
+		                    <td width="5%"> </td>
+            				<td width="5%"> </td>
+		                    #issueLine ($issue)
+		                </tr>
+		                #end
+		            #else
+            <tr>
+                <td width="5%"> </td>
+				<td width="5%"> </td>
+                <td colspan="5">
+                    <span class="subText">$action.getText("common.concepts.noissues").</span>
+                </td>
+            </tr>
+        			#end
+            	#end
+            #end
+                   
+        <tr>
+            <td width="5%"> </td>
+            <td colspan="6">No components</td>
+        </tr>
+	        #set ($issues = $statsGroup.getIssuesWithoutComponent($option.key))
+	        #if ($issues.size() > 0)
+	            #foreach ($issue in $issues)
+	            	#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
+	                <tr>
+	                    <td width="5%"> </td>
+        				<td width="5%"> </td>
+	                    #issueLine ($issue)
+	                </tr>
+	                #end
+                #end
+            #else
+	            <tr>
+                    <td width="5%"> </td>
+    				<td width="5%"> </td>
+	                <td colspan="5">
+	                    <span class="subText">$action.getText("common.concepts.noissues").</span>
+	                </td>
+	            </tr>
+            #end
+        #end
+    </tbody>
+</table>
+<i>* There is no changelog notes for this issue so the summary has been displayed instead</i>
+<br />
+<textarea rows="40" cols="120" id="editcopy">
+#foreach ($option in $statsGroup.entrySet())
+	#set ($components = $statsGroup.getComponents())
+	
+	#if ($components.size() > 0)
+		#foreach ($component in $components)
+	<h3>$component.getName()</h3>
+			#set ($issues = $statsGroup.getIssuesByComponent($option.key, $component))
+		    #if ($issues.size() > 0)
+		<ul class="fa-ul">
+		    	#foreach ($issue in $issues)
+		    		#issueLineHtml ($issue)
+		    	#end
+		</ul>
+		    #end	
+		#end
+	#end
+#end
+</textarea>

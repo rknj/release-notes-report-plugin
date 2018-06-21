@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="jira-report-plugin"/>
+    <!-- add our web resources -->
+    <web-resource key="jira-report-plugin-resources" name="jira-report-plugin Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="jira-report-plugin.css" location="/css/jira-report-plugin.css"/>
+        <resource type="download" name="jira-report-plugin.js" location="/js/jira-report-plugin.js"/>
+        <resource type="download" name="images/" location="/images"/>
+        <context>jira-report-plugin</context>
+    </web-resource>
+    <report name="Project Report By Version And Component" i18n-name-key="project-report-by-version-and-component.name"
+            key="project-report-by-version-and-component"
+            class="org.jahia.modules.jira.reports.ProjectReportByVersionAndComponent">
+        <description key="project-report-by-version-and-component.description"/>
+        <resource name="view" type="velocity"
+                  location="/templates/reports/project-report-by-version-and-component/view.vm"/>
+        <resource name="i18n" type="i18n" location="ProjectReportByVersionAndComponent"/>
+        <label key="project-report-by-version-and-component.label"/>
+        <properties>
+            <property>
+                <key>filterid</key>
+                <name>report.reportbyversionandcomponent.filterId</name>
+                <description>report.reportbyversionandcomponent.filterId.description</description>
+                <type>filterpicker</type>
+                <i18n>false</i18n>
+            </property>
+        </properties>
+    </report>
+</atlassian-plugin>
