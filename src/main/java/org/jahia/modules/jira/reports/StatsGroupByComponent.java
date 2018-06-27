@@ -51,7 +51,7 @@ public class StatsGroupByComponent extends StatsGroup {
         Iterator<Issue> it = issues.iterator();
         while (it.hasNext()) {
             Issue issue = (Issue) it.next();
-            if (issue.getComponentObjects().isEmpty()) {
+            if (issue.getComponentObjects().size() == 0) {//.isEmpty()) {
                 restrictedList.add(issue);
             }
         }

@@ -1,0 +1,78 @@
+package org.jahia.modules.jira.reports;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.log4j.Logger;
+import org.ofbiz.core.entity.GenericValue;
+
+import com.atlassian.configurable.ValuesGenerator;
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.project.version.Version;
+import com.atlassian.jira.project.version.VersionManager;
+import com.atlassian.jira.util.I18nHelper;
+import com.atlassian.jira.web.bean.I18nBean;
+
+public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
+{
+    private static final Logger log = Logger.getLogger(VersionOptionalValuesGenerator.class);
+
+    @Override
+    public Map getValues(Map params)
+    {
+        GenericValue projectGV = (GenericValue) params.get("project");
+        User remoteUser = (User) params.get("User");
+
+        try
+        {
+            VersionManager versionManager = ComponentAccessor.getVersionManager();
+            I18nHelper i18n = new I18nBean(remoteUser);
+
+            Collection<Version> unreleasedVersions = versionManager.getVersionsUnreleased(projectGV.getLong("id"), false);
+            Map<Long, String> unreleased = ListOrderedMap.decorate(new HashMap(unreleasedVersions.size()));
+            Iterator<Version> unreleasedIter = unreleasedVersions.iterator();
+            if (unreleasedIter.hasNext())
+            {
+                unreleased.put(new Long(-2), i18n.getText("common.filters.unreleasedversions"));
+                while (unreleasedIter.hasNext())
+                {
+                    Version version = unreleasedIter.next();
+                    unreleased.put(version.getId(), "- " + version.getName());
+                }
+            }
+
+            Map<Long, String> released = ListOrderedMap.decorate(new HashMap(unreleasedVersions.size()));
+            List<Version> releasedIter = new ArrayList(versionManager.getVersionsReleased(projectGV.getLong("id"), false));
+            if (!releasedIter.isEmpty())
+            {
+                released.put(new Long(-3), i18n.getText("common.filters.releasedversions"));
+                Collections.reverse(releasedIter);
+                for (Iterator<Version> iterator = releasedIter.iterator(); iterator.hasNext();)
+                {
+                    Version version = iterator.next();
+                    released.put(version.getId(), "- " + version.getName());
+                }
+            }
+
+            int size = unreleased.size() + released.size() + 1;
+            Map<Long, String> versions = ListOrderedMap.decorate(new HashMap(size));
+
+            versions.put(new Long(-1), i18n.getText("timetracking.nofixversion"));
+            versions.putAll(unreleased);
+            versions.putAll(released);
+            return versions;
+        }
+        catch (Exception e)
+        {
+            log.error("Could not retrieve versions for the project: "+   ((projectGV != null) ? projectGV.getString("id"): "Project is null."), e);
+            return null;
+        }
+    }
+}

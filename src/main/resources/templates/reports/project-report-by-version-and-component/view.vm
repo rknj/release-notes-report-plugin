@@ -1,6 +1,7 @@
 #enable_html_escaping()
 #if ($searchRequest)
     #set ($urlPrefix = "${req.contextPath}/secure/IssueNavigator.jspa?reset=true")
+    #set ($urlBrowsePrefix = "${req.contextPath}/browse/")
 #end
 
 #macro(issueLine $issue)
@@ -40,55 +41,56 @@
     #end
 #end
 
+#macro(filterTitle $value)
+$i18n.getText('report.reportbyversionandcomponent.mapper.filterid.name'): <a href="${urlPrefix}$!searchService.getQueryString($user, $searchRequest.getQuery())">$value</a>
+#end
+
+#macro(versionTitle $projectName $version)
+<a href="${urlBrowsePrefix}$projectName">$projectName</a> - 
+	#if ($version)
+<a href="${urlPrefix}$!searchService.getQueryString($user, $query)">#versionName ($version)</a> ($releaseStatus)
+	#else
+$i18n.getText("common.words.none")
+	#end
+#end
+
 <table width="100%" class="aui" id="single_groupby_report_table">
     <thead>
     <tr>
         <th colspan="6">
-            <h2>$i18n.getText('report.reportbyversionandcomponent.mapper.filterid.name'): $textutils.htmlEncode($searchRequest.name)</h2>
+            <h2>#versionTitle($projectName $version)</h2>
         </th>
     </tr>
     </thead>
     <tbody>
-        #foreach ($option in $statsGroup.entrySet())
-        <tr>
-            <th colspan="7" class="stat-heading">
-                <h3>#statHeading ($mapperType $option.key $customFieldManager "${urlPrefix}$!searchService.getQueryString($user, $statsGroup.getMapper().getSearchUrlSuffix($option.key, $searchRequest).getQuery())")</h3>
-            </th>
-        </tr>
             #set ($components = $statsGroup.getComponents())
             #if ($components.size() > 0)
                 #foreach ($component in $components)
+                	#set ($issues = $statsGroup.getIssuesByComponent($version, $component))
+		            #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
             <td colspan="6">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
         </tr>
-                	#set ($issues = $statsGroup.getIssuesByComponent($option.key, $component))
-		            #if ($issues.size() > 0)
 		                #foreach ($issue in $issues)
-		                <tr>
+		                	#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
+	                	<tr>
 		                    <td width="5%"> </td>
             				<td width="5%"> </td>
 		                    #issueLine ($issue)
 		                </tr>
+	                		#end
 		                #end
-		            #else
-            <tr>
-                <td width="5%"> </td>
-				<td width="5%"> </td>
-                <td colspan="5">
-                    <span class="subText">$action.getText("common.concepts.noissues").</span>
-                </td>
-            </tr>
         			#end
             	#end
             #end
                    
+	        #set ($issues = $statsGroup.getIssuesWithoutComponent($version))
+	        #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
             <td colspan="6">No components</td>
         </tr>
-	        #set ($issues = $statsGroup.getIssuesWithoutComponent($option.key))
-	        #if ($issues.size() > 0)
 	            #foreach ($issue in $issues)
 	            	#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
 	                <tr>
@@ -98,36 +100,41 @@
 	                </tr>
 	                #end
                 #end
-            #else
-	            <tr>
-                    <td width="5%"> </td>
-    				<td width="5%"> </td>
-	                <td colspan="5">
-	                    <span class="subText">$action.getText("common.concepts.noissues").</span>
-	                </td>
-	            </tr>
             #end
-        #end
     </tbody>
 </table>
+<br />
 <i>* There is no changelog notes for this issue so the summary has been displayed instead</i>
 <br />
-<textarea rows="40" cols="120" id="editcopy">
-#foreach ($option in $statsGroup.entrySet())
-	#set ($components = $statsGroup.getComponents())
+<br />
+<textarea rows="30" cols="120" id="editcopy">
+	<h2>$version.getName()</h2>
 	
+	#set ($components = $statsGroup.getComponents())
 	#if ($components.size() > 0)
 		#foreach ($component in $components)
-	<h3>$component.getName()</h3>
-			#set ($issues = $statsGroup.getIssuesByComponent($option.key, $component))
+			#set ($issues = $statsGroup.getIssuesByComponent($version, $component))
 		    #if ($issues.size() > 0)
+	<h3>$component.getName()</h3>
 		<ul class="fa-ul">
 		    	#foreach ($issue in $issues)
-		    		#issueLineHtml ($issue)
+		    		#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
+	                	#issueLineHtml ($issue)
+	                #end
 		    	#end
 		</ul>
 		    #end	
 		#end
 	#end
-#end
+	        
+	#set ($issues = $statsGroup.getIssuesWithoutComponent($version))
+	#if ($issues.size() > 0)
+		<ul class="fa-ul">
+    	#foreach ($issue in $issues)
+    		#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
+            	#issueLineHtml ($issue)
+            #end
+    	#end
+		</ul>
+	#end
 </textarea>

@@ -1,19 +1,16 @@
 package org.jahia.modules.jira.reports;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.Collector;
 
-import com.atlassian.jira.bc.JiraServiceContext;
-import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.bc.filter.SearchRequestService;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.datetime.DateTimeStyle;
-import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.IssueFactory;
 import com.atlassian.jira.issue.fields.FieldManager;
@@ -25,19 +22,21 @@ import com.atlassian.jira.issue.search.SearchRequest;
 import com.atlassian.jira.issue.statistics.FixForVersionStatisticsMapper;
 import com.atlassian.jira.issue.statistics.StatisticsMapper;
 import com.atlassian.jira.issue.statistics.util.OneDimensionalDocIssueHitCollector;
+import com.atlassian.jira.jql.builder.JqlClauseBuilder;
+import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.plugin.report.impl.AbstractReport;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.project.version.VersionManager;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.util.SimpleErrorCollection;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.jira.web.action.ProjectActionSupport;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
+import com.atlassian.query.Query;
+import com.atlassian.query.order.SortOrder;
 import com.atlassian.util.profiling.UtilTimerStack;
-import com.google.common.collect.ImmutableMap;
 import com.opensymphony.util.TextUtils;
 
 @Scanned
@@ -87,16 +86,16 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
         this.formatter = dateTimeFormatterFactory.formatter().withStyle(DateTimeStyle.DATE).forLoggedInUser();
     }
 
-    public StatsGroupByComponent getOptions(SearchRequest sr, ApplicationUser user, StatisticsMapper mapper, Long projectId)
-            throws PermissionException {
-        try {
-            return searchMapIssueKeys(sr, user, mapper, projectId);
-        } catch (SearchException e) {
-            log.error("Exception rendering " + this.getClass().getName(), e);
-            return null;
-        }
-    }
-
+    /**
+     * Search for the issues
+     * 
+     * @param request
+     * @param searcher
+     * @param mapper
+     * @param projectId
+     * @return
+     * @throws SearchException
+     */
     public StatsGroupByComponent searchMapIssueKeys(SearchRequest request, ApplicationUser searcher, StatisticsMapper mapper,
             Long projectId) throws SearchException {
         try {
@@ -113,81 +112,76 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
         }
     }
 
+    /**
+     * Generate the report content
+     * 
+     * @param action
+     * @param params
+     * @return the HTML content
+     * @throws Exception
+     */
     public String generateReportHtml(ProjectActionSupport action, Map params) throws Exception {
-        String filterId = (String) params.get("filterid");
-        if (filterId == null) {
-            log.info("Project Report By Version And Component run without a project selected (JRA-5042): params=" + params);
-            return "<span class='errMsg'>No search filter has been selected. Please " + "<a href=\"IssueNavigator.jspa?reset=Update&pid="
+        String versionIdString = (String) params.get("versionId");
+        Version version = null;
+        String releaseStatus = "Unreleased";
+        if (versionIdString == null || versionIdString.equals(VersionManager.ALL_RELEASED_VERSIONS)
+                || versionIdString.equals(VersionManager.ALL_UNRELEASED_VERSIONS)) {
+            return "<span class='errMsg'>No version has been selected. Please " + "<a href=\"IssueNavigator.jspa?reset=Update&pid="
                     + TextUtils.htmlEncode((String) params.get("selectedProjectId")) + "\">create one</a>, and re-run this report.";
-        }
-        String mapper = (String) params.get("mapper");
-        final StatisticsMapper mapperObject = new FixForVersionReleaseStatisticsMapper(versionManager);
-        // old stuff: FilterStatisticsValuesGenerator().getStatsMapper(mapper)
-        
-        final JiraServiceContext ctx = new JiraServiceContextImpl(action.getLoggedInApplicationUser());
-        final SearchRequest request = searchRequestService.getFilter(ctx, new Long(filterId));
-
-        try {
-            final Map startingParams = ImmutableMap.builder().put("action", action)
-                    .put("statsGroup",
-                            getOptions(request, action.getLoggedInApplicationUser(), mapperObject, action.getSelectedProjectId()))
-                    .put("searchRequest", request)
-                    .put("mapperType", mapper)
-                    .put("customFieldManager", customFieldManager)
-                    .put("fieldVisibility", fieldVisibilityManager)
-                    .put("searchService", searchService)
-                    .put("portlet", this)
-                    .put("formatter", formatter)
-                    .put("versionManager", versionManager).build();
-
-            return descriptor.getHtml("view", startingParams);
-
-        } catch (PermissionException e) {
-            log.error(e.getStackTrace());
-            return null;
-        }
-    }
-
-    public void validate(ProjectActionSupport action, Map params) {
-        super.validate(action, params);
-        String filterId = (String) params.get("filterid");
-        if (StringUtils.isEmpty(filterId)) {
-            action.addError("filterid", action.getText("report.reportbyversionandcomponent.filter.is.required"));
-        } else {
-            validateFilterId(action, filterId);
-        }
-    }
-
-    private void validateFilterId(ProjectActionSupport action, String filterId) {
-        try {
-            JiraServiceContextImpl serviceContext = new JiraServiceContextImpl(action.getLoggedInApplicationUser(),
-                    new SimpleErrorCollection());
-            SearchRequest searchRequest = searchRequestService.getFilter(serviceContext, new Long(filterId));
-            if (searchRequest == null) {
-                action.addErrorMessage(action.getText("report.error.no.filter"));
+        } else if (!versionIdString.equals(VersionManager.NO_VERSIONS)) {
+            final Long versionId = new Long(versionIdString);
+            version = versionManager.getVersion(versionId);
+            
+            if (version.isReleased()) {
+                releaseStatus = "Released";
             }
-        } catch (NumberFormatException nfe) {
-            action.addError("filterId", action.getText("report.error.filter.id.not.a.number", filterId));
         }
+
+        Query query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString));
+        SearchRequest req = new SearchRequest(query);
+
+        final Map<String, Object> startingParams = new HashMap<String, Object>();
+        startingParams.put("action", action);
+        startingParams.put("statsGroup", searchMapIssueKeys(req, action.getLoggedInApplicationUser(),
+                new FixForVersionStatisticsMapper(versionManager), action.getSelectedProjectId()));
+        startingParams.put("searchRequest", req);
+        startingParams.put("query", query);
+        startingParams.put("projectName", action.getSelectedProject().getName());
+        startingParams.put("version", version);
+        startingParams.put("releaseStatus", releaseStatus);
+        startingParams.put("versionIdString", versionIdString);
+        startingParams.put("customFieldManager", customFieldManager);
+        startingParams.put("fieldVisibility", fieldVisibilityManager);
+        startingParams.put("searchService", searchService);
+        startingParams.put("portlet", this);
+        startingParams.put("formatter", formatter);
+        startingParams.put("versionManager", versionManager);
+
+        return descriptor.getHtml("view", startingParams);
     }
 
     /**
-     * A version lucene result mapper that only includes unreleased versions.
+     * Create the JQL query
+     * 
+     * @param projectId
+     * @param versionId
+     * @return
      */
-    class FixForVersionReleaseStatisticsMapper extends FixForVersionStatisticsMapper {
+    private Query buildQuery(final Long projectId, final Long versionId) {
+        final JqlQueryBuilder queryBuilder = JqlQueryBuilder.newBuilder();
+        final JqlClauseBuilder builder = queryBuilder.where().project(projectId);
 
-        public FixForVersionReleaseStatisticsMapper(VersionManager versionManager) {
-            super(versionManager, false);
-
-        }
-
-        public boolean isValidValue(Object value) {
-            boolean valid = super.isValidValue(value);
-            if (valid && value != null) {
-                return !((Version) value).isReleased();
+        if (versionId != null) {
+            if (VersionManager.NO_VERSIONS.equals(versionId.toString())) {
+                builder.and().fixVersionIsEmpty();
             } else {
-                return valid;
+                builder.and().fixVersion().eq(versionId);
             }
         }
+
+        queryBuilder.orderBy().issueKey(SortOrder.ASC);
+
+        return queryBuilder.buildQuery();
     }
+
 }

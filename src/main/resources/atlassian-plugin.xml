@@ -28,11 +28,12 @@
         <label key="project-report-by-version-and-component.label"/>
         <properties>
             <property>
-                <key>filterid</key>
-                <name>report.reportbyversionandcomponent.filterId</name>
-                <description>report.reportbyversionandcomponent.filterId.description</description>
-                <type>filterpicker</type>
+                <key>versionId</key>
+                <name>report.reportbyversionandcomponent.versionId</name>
+                <description>report.reportbyversionandcomponent.versionId.description</description>
+                <type>select</type>
                 <i18n>false</i18n>
+                <values class="org.jahia.modules.jira.reports.VersionOptionalValuesGenerator"/>
             </property>
         </properties>
     </report>
