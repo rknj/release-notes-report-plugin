@@ -11,6 +11,11 @@
     </organization>
     <name>jira-report-plugin</name>
     <description>Extends JIRA issue reports.</description>
+    <scm>
+		<connection>scm:git:git@github.com:Jahia/jira-report-plugin.git</connection>
+	    <developerConnection>scm:git:git@github.com:Jahia/jira-report-plugin.git</developerConnection>
+	    <url>scm:git:git@github.com:Jahia/jira-report-plugin.git</url>
+	</scm>
     <packaging>atlassian-plugin</packaging>
     <dependencies>
         <dependency>
