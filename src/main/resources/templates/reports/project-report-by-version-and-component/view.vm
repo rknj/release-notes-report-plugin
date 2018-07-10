@@ -54,7 +54,7 @@ $i18n.getText('report.reportbyversionandcomponent.mapper.filterid.name'): <a hre
 #end
 
 #macro(versionTitle $projectName $version)
-<a href="${urlPrefix}&jqlQuery=project%3D$projectID">$projectName</a> - 
+<a href="${urlPrefix}&jqlQuery=project%3D$projectId">$projectName</a> - 
 	#if ($version)
 <a href="${urlPrefix}$!searchService.getQueryString($user, $query)">#versionName ($version)</a> ($releaseStatus)
 	#else
