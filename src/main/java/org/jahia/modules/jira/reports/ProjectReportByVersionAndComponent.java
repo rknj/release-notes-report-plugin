@@ -147,6 +147,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
         startingParams.put("searchRequest", req);
         startingParams.put("query", query);
         startingParams.put("projectName", action.getSelectedProject().getName());
+        startingParams.put("projectId", action.getSelectedProject().getId());
         startingParams.put("version", version);
         startingParams.put("releaseStatus", releaseStatus);
         startingParams.put("versionIdString", versionIdString);

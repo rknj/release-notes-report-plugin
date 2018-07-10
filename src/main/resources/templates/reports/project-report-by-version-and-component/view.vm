@@ -5,40 +5,48 @@
 #end
 
 #macro(issueLine $issue)
-<td width=5%>#displayType($issue)</td>
-<td width=5% nowrap><a href="$req.contextPath/browse/$issue.getKey()">$issue.getKey()</a></td>
-<td nowrap width=5%>
-	#if ($issue.getPriorityObject())
-		#displayConstantIcon($issue.getPriorityObject())
+	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
+<tr>
+	<td width="5%"> </td>
+	<td width="5%"> </td>
+	<td width=5%>#displayType($issue)</td>
+	<td width=5% nowrap><a href="$req.contextPath/browse/$issue.getKey()">$issue.getKey()</a></td>
+	<td nowrap width=5%>
+		#if ($issue.getPriorityObject())
+			#displayConstantIcon($issue.getPriorityObject())
+		#end
+	</td>
+	<td width=80%>
+	    #if ($issue.isSubTask())
+	        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
+	        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
+	    #end
+		#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
+			$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))
+		#else
+	    	<i>$issue.getSummary()*</i>
+	    #end
+	</td>
+	<td nowrap width=5%>
+		$issue.getStatusObject().getName()
+	</td>
+</tr>
 	#end
-</td>
-<td width=80%>
-    #if ($issue.isSubTask())
-        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
-        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
-    #end
-	#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
-    	$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))
-    #else
-    	<i>$issue.getSummary()*</i>
-    #end
-</td>
-<td nowrap width=5%>
-	$issue.getStatusObject().getName()
-</td>
 #end
 
 #macro(issueLineHtml $issue)
-	#if ($issue.getIssueType().getName().contains("Bug"))
-		#set ($icon = "fa-bug")
-	#else
+	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
 		#set ($icon = "fa-paper-plane")
+		#if ($issue.getIssueTypeObject().getName().contains("Bug"))
+			#set ($icon = "fa-bug")	
+		#end
+		
+		#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
+	    	<li><span class="fa-li"><i class="fas $icon"></i></span>$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))</li>
+	    #else
+	    	<li><span class="fa-li"><i class="fas $icon"></i></span><i>$issue.getSummary()*</i></li>
+	    #end
 	#end
-	#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
-    	<li><span class="fa-li"><i class="fas $icon"></i></span>$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))</li>
-    #else
-    	<li><span class="fa-li"><i class="fas $icon"></i></span><i>$issue.getSummary()*</i></li>
-    #end
 #end
 
 #macro(filterTitle $value)
@@ -46,7 +54,7 @@ $i18n.getText('report.reportbyversionandcomponent.mapper.filterid.name'): <a hre
 #end
 
 #macro(versionTitle $projectName $version)
-<a href="${urlBrowsePrefix}$projectName">$projectName</a> - 
+<a href="${urlPrefix}&jqlQuery=project%3D$projectID">$projectName</a> - 
 	#if ($version)
 <a href="${urlPrefix}$!searchService.getQueryString($user, $query)">#versionName ($version)</a> ($releaseStatus)
 	#else
@@ -73,13 +81,7 @@ $i18n.getText("common.words.none")
             <td colspan="6">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
         </tr>
 		                #foreach ($issue in $issues)
-		                	#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
-	                	<tr>
-		                    <td width="5%"> </td>
-            				<td width="5%"> </td>
-		                    #issueLine ($issue)
-		                </tr>
-	                		#end
+		                	#issueLine ($issue)
 		                #end
         			#end
             	#end
@@ -92,13 +94,7 @@ $i18n.getText("common.words.none")
             <td colspan="6">No components</td>
         </tr>
 	            #foreach ($issue in $issues)
-	            	#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
-	                <tr>
-	                    <td width="5%"> </td>
-        				<td width="5%"> </td>
-	                    #issueLine ($issue)
-	                </tr>
-	                #end
+	            	#issueLine ($issue)
                 #end
             #end
     </tbody>
@@ -118,9 +114,7 @@ $i18n.getText("common.words.none")
 	<h3>$component.getName()</h3>
 		<ul class="fa-ul">
 		    	#foreach ($issue in $issues)
-		    		#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
-	                	#issueLineHtml ($issue)
-	                #end
+		    		#issueLineHtml ($issue)
 		    	#end
 		</ul>
 		    #end	
@@ -131,9 +125,7 @@ $i18n.getText("common.words.none")
 	#if ($issues.size() > 0)
 		<ul class="fa-ul">
     	#foreach ($issue in $issues)
-    		#if ((!$issue.getParentObject() && !$issue.getIssueType().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueType().name.equals("Release Process")))
-            	#issueLineHtml ($issue)
-            #end
+    		#issueLineHtml ($issue)
     	#end
 		</ul>
 	#end
