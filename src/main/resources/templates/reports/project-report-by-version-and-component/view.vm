@@ -104,29 +104,28 @@ $i18n.getText("common.words.none")
 <br />
 <br />
 <textarea rows="30" cols="120" id="editcopy">
-	<h2>$version.getName()</h2>
-	
 	#set ($components = $statsGroup.getComponents())
 	#if ($components.size() > 0)
 		#foreach ($component in $components)
 			#set ($issues = $statsGroup.getIssuesByComponent($version, $component))
 		    #if ($issues.size() > 0)
-	<h3>$component.getName()</h3>
-		<ul class="fa-ul">
+<h3>$component.getName()</h3>
+<ul class="fa-ul">
 		    	#foreach ($issue in $issues)
 		    		#issueLineHtml ($issue)
 		    	#end
-		</ul>
+</ul>
 		    #end	
 		#end
 	#end
 	        
 	#set ($issues = $statsGroup.getIssuesWithoutComponent($version))
 	#if ($issues.size() > 0)
-		<ul class="fa-ul">
+<h3>No components</h3>
+<ul class="fa-ul">
     	#foreach ($issue in $issues)
     		#issueLineHtml ($issue)
     	#end
-		</ul>
+</ul>
 	#end
 </textarea>

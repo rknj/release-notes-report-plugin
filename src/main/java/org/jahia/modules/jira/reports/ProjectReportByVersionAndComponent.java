@@ -1,11 +1,5 @@
 package org.jahia.modules.jira.reports;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.apache.lucene.search.Collector;
-
 import com.atlassian.jira.bc.filter.SearchRequestService;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.datetime.DateTimeFormatter;
@@ -38,6 +32,11 @@ import com.atlassian.query.Query;
 import com.atlassian.query.order.SortOrder;
 import com.atlassian.util.profiling.UtilTimerStack;
 import com.opensymphony.util.TextUtils;
+import org.apache.log4j.Logger;
+import org.apache.lucene.search.Collector;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Scanned
 public class ProjectReportByVersionAndComponent extends AbstractReport {
@@ -65,13 +64,14 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
     private final VersionManager versionManager;
     @JiraImport
     private final ReaderCache readerCache;
+    @JiraImport
     private final DateTimeFormatter formatter;
 
     public ProjectReportByVersionAndComponent(final SearchProvider searchProvider, final SearchRequestService searchRequestService,
             final IssueFactory issueFactory, final CustomFieldManager customFieldManager, final IssueIndexManager issueIndexManager,
             final SearchService searchService, final FieldVisibilityManager fieldVisibilityManager, final ReaderCache readerCache,
             final FieldManager fieldManager, final ProjectManager projectManager, final VersionManager versionManager,
-            @JiraImport DateTimeFormatterFactory dateTimeFormatterFactory) {
+            @JiraImport final DateTimeFormatterFactory dateTimeFormatterFactory) {
         this.searchProvider = searchProvider;
         this.searchRequestService = searchRequestService;
         this.issueFactory = issueFactory;
@@ -142,7 +142,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
 
         final Map<String, Object> startingParams = new HashMap<String, Object>();
         startingParams.put("action", action);
-        startingParams.put("statsGroup", searchMapIssueKeys(req, action.getLoggedInApplicationUser(),
+        startingParams.put("statsGroup", searchMapIssueKeys(req, action.getLoggedInUser(),
                 new FixForVersionStatisticsMapper(versionManager), action.getSelectedProjectId()));
         startingParams.put("searchRequest", req);
         startingParams.put("query", query);
@@ -180,7 +180,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             }
         }
 
-        queryBuilder.orderBy().issueKey(SortOrder.ASC);
+        queryBuilder.orderBy().issueType(SortOrder.DESC, true).issueKey(SortOrder.ASC);
 
         return queryBuilder.buildQuery();
     }

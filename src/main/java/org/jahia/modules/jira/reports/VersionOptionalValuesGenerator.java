@@ -1,24 +1,17 @@
 package org.jahia.modules.jira.reports;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.atlassian.configurable.ValuesGenerator;
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.project.version.Version;
+import com.atlassian.jira.project.version.VersionManager;
+import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.util.I18nHelper;
+import com.atlassian.jira.web.bean.I18nBean;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericValue;
 
-import com.atlassian.configurable.ValuesGenerator;
-import com.atlassian.crowd.embedded.api.User;
-import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.project.version.Version;
-import com.atlassian.jira.project.version.VersionManager;
-import com.atlassian.jira.util.I18nHelper;
-import com.atlassian.jira.web.bean.I18nBean;
+import java.util.*;
 
 public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
 {
@@ -28,7 +21,7 @@ public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
     public Map getValues(Map params)
     {
         GenericValue projectGV = (GenericValue) params.get("project");
-        User remoteUser = (User) params.get("User");
+        ApplicationUser remoteUser = (ApplicationUser) params.get("User");
 
         try
         {

@@ -1,15 +1,15 @@
 package org.jahia.modules.jira.reports;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import com.atlassian.jira.bc.project.component.ProjectComponent;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.statistics.StatisticsMapper;
 import com.atlassian.jira.issue.statistics.StatsGroup;
 import com.atlassian.jira.project.version.Version;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class StatsGroupByComponent extends StatsGroup {
 
@@ -31,12 +31,12 @@ public class StatsGroupByComponent extends StatsGroup {
     // TODO with Jira > 7.0 replace getComponentObjects by getComponents
     @SuppressWarnings("unchecked")
     public Collection<Issue> getIssuesByComponent(Version version, ProjectComponent component) throws Exception {
-        Collection<Issue> restrictedList = new ArrayList<>();
+        Collection<Issue> restrictedList = new ArrayList<Issue>();
         Collection<Issue> issues = (Collection<Issue>) this.get(version);
         Iterator<Issue> it = issues.iterator();
         while (it.hasNext()) {
             Issue issue = (Issue) it.next();
-            if (issue.getComponentObjects().contains(component)) {
+            if (issue.getComponents().contains(component)) {
                 restrictedList.add(issue);
             }
         }
@@ -46,12 +46,12 @@ public class StatsGroupByComponent extends StatsGroup {
     // TODO with Jira > 7.0 replace getComponentObjects by getComponents
     @SuppressWarnings("unchecked")
     public Collection<Issue> getIssuesWithoutComponent(Version version) {
-        Collection<Issue> restrictedList = new ArrayList<>();
+        Collection<Issue> restrictedList = new ArrayList<Issue>();
         Collection<Issue> issues = (Collection<Issue>) this.get(version);
         Iterator<Issue> it = issues.iterator();
         while (it.hasNext()) {
             Issue issue = (Issue) it.next();
-            if (issue.getComponentObjects().isEmpty()) {
+            if (issue.getComponents().isEmpty()) {
                 restrictedList.add(issue);
             }
         }
