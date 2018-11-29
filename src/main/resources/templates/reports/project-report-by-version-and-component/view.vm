@@ -4,7 +4,7 @@
     #set ($urlBrowsePrefix = "${req.contextPath}/browse/")
 #end
 
-#macro(issueLine $issue)
+#macro(issueLine $issue $currentComponent)
 	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
 <tr>
 	<td width="5%"> </td>
@@ -16,7 +16,7 @@
 			#displayConstantIcon($issue.getPriorityObject())
 		#end
 	</td>
-	<td width=80%>
+	<td width=60%>
 	    #if ($issue.isSubTask())
 	        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
 	        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
@@ -26,6 +26,18 @@
 		#else
 	    	<i>$issue.getSummary()*</i>
 	    #end
+	</td>
+	<td width=20%>
+		#if ($issue.getComponents().size() > 0)
+			#set ($allComponents = $issue.getComponents())
+			#if ($allComponents.size() > 0)
+				#foreach ($otherComponent in $allComponents)
+					#if (!$currentComponent.getName().equals($otherComponent.getName()))
+						$otherComponent.getName()
+					#end
+				#end
+			#end
+		#end
 	</td>
 	<td nowrap width=5%>
 		$issue.getStatusObject().getName()
@@ -54,7 +66,7 @@ $i18n.getText('report.reportbyversionandcomponent.mapper.filterid.name'): <a hre
 #end
 
 #macro(versionTitle $projectName $version)
-<a href="${urlPrefix}&jqlQuery=project%3D$projectId">$projectName</a> - 
+<a href="${urlBrowsePrefix}$projectName">$projectName</a> -
 	#if ($version)
 <a href="${urlPrefix}$!searchService.getQueryString($user, $query)">#versionName ($version)</a> ($releaseStatus)
 	#else
@@ -65,23 +77,30 @@ $i18n.getText("common.words.none")
 <table width="100%" class="aui" id="single_groupby_report_table">
     <thead>
     <tr>
-        <th colspan="6">
+        <th colspan="8">
             <h2>#versionTitle($projectName $version)</h2>
         </th>
     </tr>
     </thead>
     <tbody>
-            #set ($components = $statsGroup.getComponents())
+			$statsGroup.buildComponentMap($version)
+
+            #set ($components = $statsGroup.getComponents($version))
             #if ($components.size() > 0)
                 #foreach ($component in $components)
                 	#set ($issues = $statsGroup.getIssuesByComponent($version, $component))
 		            #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
-            <td colspan="6">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
+			#set ($componentVersion = $statsGroup.getVersionOfComponent($component))
+			#if ($componentVersion)
+                <td colspan="7">#statHeading ("components" $component $customFieldManager "") $component.getName() <i>($componentVersion)</i></td>
+			#else
+                <td colspan="7">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
+			#end
         </tr>
 		                #foreach ($issue in $issues)
-		                	#issueLine ($issue)
+		                	#issueLine ($issue $component)
 		                #end
         			#end
             	#end
@@ -91,7 +110,7 @@ $i18n.getText("common.words.none")
 	        #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
-            <td colspan="6">No components</td>
+            <td colspan="7">No components</td>
         </tr>
 	            #foreach ($issue in $issues)
 	            	#issueLine ($issue)
