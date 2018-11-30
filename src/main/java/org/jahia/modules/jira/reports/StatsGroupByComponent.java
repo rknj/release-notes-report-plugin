@@ -64,7 +64,7 @@ public class StatsGroupByComponent extends StatsGroup {
 
         // Get a version matching the component name
         for (Version version:versions) {
-            if (version.getName().contains(component.getName())) {
+            if (version.getName().toLowerCase().contains(component.getName().toLowerCase())) {
                 return version;
             }
         }
