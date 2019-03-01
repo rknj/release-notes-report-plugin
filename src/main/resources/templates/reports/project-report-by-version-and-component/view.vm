@@ -16,7 +16,7 @@
 			#displayConstantIcon($issue.getPriorityObject())
 		#end
 	</td>
-	<td width=60%>
+	<td width=50%>
 	    #if ($issue.isSubTask())
 	        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
 	        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
@@ -27,18 +27,30 @@
 	    	<i>$issue.getSummary()*</i>
 	    #end
 	</td>
-	<td width=20%>
+    <td width=10%>
 		#if ($issue.getComponents().size() > 0)
 			#set ($allComponents = $issue.getComponents())
 			#if ($allComponents.size() > 0)
-				#foreach ($otherComponent in $allComponents)
-					#if (!$currentComponent.getName().equals($otherComponent.getName()))
-						$otherComponent.getName()
-					#end
+			#foreach ($otherComponent in $allComponents)
+				#if (!$currentComponent.getName().equals($otherComponent.getName()))
+					$otherComponent.getName()
 				#end
 			#end
 		#end
-	</td>
+		#end
+    </td>
+    <td width=10%>
+		#if ($issue.getFixVersions().size() > 0)
+			#set ($allVersions = $issue.getFixVersions())
+			#if ($allVersions.size() > 0)
+			#foreach ($otherVersion in $allVersions)
+				#if (!$version.getName().equals($otherVersion.getName()))
+					$otherVersion.getName()
+				#end
+			#end
+		#end
+		#end
+    </td>
 	<td nowrap width=5%>
 		$issue.getStatusObject().getName()
 	</td>
@@ -77,7 +89,7 @@ $i18n.getText("common.words.none")
 <table width="100%" class="aui" id="single_groupby_report_table">
     <thead>
     <tr>
-        <th colspan="8">
+        <th colspan="9">
             <h2>#versionTitle($projectName $version)</h2>
         </th>
     </tr>
@@ -94,9 +106,9 @@ $i18n.getText("common.words.none")
             <td width="5%"> </td>
 			#set ($componentVersion = $statsGroup.getVersionOfComponent($component))
 			#if ($componentVersion)
-                <td colspan="7">#statHeading ("components" $component $customFieldManager "") $component.getName() <i>($componentVersion)</i></td>
+                <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName() <i>($componentVersion)</i></td>
 			#else
-                <td colspan="7">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
+                <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
 			#end
         </tr>
 		                #foreach ($issue in $issues)
@@ -110,7 +122,7 @@ $i18n.getText("common.words.none")
 	        #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
-            <td colspan="7">No components</td>
+            <td colspan="8">No components</td>
         </tr>
 	            #foreach ($issue in $issues)
 	            	#issueLine ($issue)
