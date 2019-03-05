@@ -9,4 +9,7 @@ This module has been created following the Atlassian tutorial: https://developer
 ## Useful links
 
 https://developer.atlassian.com/server/jira/platform/report/
+
 https://docs.atlassian.com/software/jira/docs/api/6.4.12/
+
+https://developer.atlassian.com/server/framework/atlassian-sdk/packaging-and-releasing-your-plugin/
