@@ -20,6 +20,11 @@ public class StatsGroupByComponent extends StatsGroup {
         selectedProjectId = projectId;
     }
 
+    /**
+     * For the current version, build the set of component/issues
+     *
+     * @param version
+     */
     public void buildComponentMap(Version version) {
         componentsMap = new HashMap<Version, Map<ProjectComponent, Collection<Issue>>>();
         issuesWithoutComponents = new HashMap<Version, Collection<Issue>>();
@@ -58,6 +63,13 @@ public class StatsGroupByComponent extends StatsGroup {
         return issuesWithoutComponents.get(version);
     }
 
+    /**
+     * Get the first version available for the component
+     *
+     * @param component
+     * @return
+     */
+    // TODO: Component versions REST API is coming soon in Subcomponents for Jira v3.1.0
     public Version getVersionOfComponent(ProjectComponent component){
         // Get all the versions remaining except the selected one
         Collection<Version> versions = ComponentAccessor.getVersionManager().getVersionsUnreleased(selectedProjectId, false);

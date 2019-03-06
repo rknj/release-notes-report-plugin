@@ -7,8 +7,8 @@
 #macro(issueLine $issue $currentComponent)
 	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
 <tr>
-	<td width="5%"> </td>
-	<td width="5%"> </td>
+	<td width="2%"> </td>
+	<td width="3%"> </td>
 	<td width=5%>#displayType($issue)</td>
 	<td width=5% nowrap><a href="$req.contextPath/browse/$issue.getKey()">$issue.getKey()</a></td>
 	<td nowrap width=5%>
@@ -16,7 +16,7 @@
 			#displayConstantIcon($issue.getPriorityObject())
 		#end
 	</td>
-	<td width=50%>
+	<td width=45%>
 	    #if ($issue.isSubTask())
 	        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
 	        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
@@ -39,20 +39,26 @@
 		#end
 		#end
     </td>
-    <td width=10%>
+    <td width=15%>
 		#if ($issue.getFixVersions().size() > 0)
 			#set ($allVersions = $issue.getFixVersions())
 			#if ($allVersions.size() > 0)
 			#foreach ($otherVersion in $allVersions)
 				#if (!$version.getName().equals($otherVersion.getName()))
+					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&reportKey=org.jahia.modules.jira.reports.jira-report-plugin%3Aproject-report-by-version-and-component&Next=Next">
 					$otherVersion.getName()
+                    </a>
 				#end
 			#end
 		#end
 		#end
     </td>
-	<td nowrap width=5%>
-		$issue.getStatusObject().getName()
+	<td nowrap width=10%>
+		<span id="status-val" class="value">
+        	<span class=" jira-issue-status-lozenge aui-lozenge jira-issue-status-lozenge-$issue.getStatusObject().getStatusCategory().getColorName() jira-issue-status-lozenge-max-width-medium">$issue.getStatusObject().getName()</span>
+		</span>
+
+
 	</td>
 </tr>
 	#end
@@ -104,8 +110,10 @@ $i18n.getText("common.words.none")
 		            #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
+            ## If the method returns null, it will not update the variable so we need to set it with a default value before
+			#set ($componentVersion = "")
 			#set ($componentVersion = $statsGroup.getVersionOfComponent($component))
-			#if ($componentVersion)
+			#if ($componentVersion != "")
                 <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName() <i>($componentVersion)</i></td>
 			#else
                 <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
