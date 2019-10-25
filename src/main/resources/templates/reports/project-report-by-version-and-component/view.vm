@@ -110,14 +110,7 @@ $i18n.getText("common.words.none")
 		            #if ($issues.size() > 0)
         <tr>
             <td width="5%"> </td>
-            ## If the method returns null, it will not update the variable so we need to set it with a default value before
-			#set ($componentVersion = "")
-			#set ($componentVersion = $statsGroup.getVersionOfComponent($component))
-			#if ($componentVersion != "")
-                <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName() <i>($componentVersion)</i></td>
-			#else
-                <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
-			#end
+            <td colspan="8">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
         </tr>
 		                #foreach ($issue in $issues)
 		                	#issueLine ($issue $component)
