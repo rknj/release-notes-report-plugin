@@ -9,10 +9,7 @@ import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.IssueFactory;
 import com.atlassian.jira.issue.fields.FieldManager;
 import com.atlassian.jira.issue.index.IssueIndexManager;
-import com.atlassian.jira.issue.search.ReaderCache;
-import com.atlassian.jira.issue.search.SearchException;
-import com.atlassian.jira.issue.search.SearchProvider;
-import com.atlassian.jira.issue.search.SearchRequest;
+import com.atlassian.jira.issue.search.*;
 import com.atlassian.jira.issue.statistics.FixForVersionStatisticsMapper;
 import com.atlassian.jira.issue.statistics.StatisticsMapper;
 import com.atlassian.jira.issue.statistics.util.OneDimensionalDocIssueHitCollector;
@@ -25,7 +22,6 @@ import com.atlassian.jira.project.version.VersionManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.jira.web.action.ProjectActionSupport;
-import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.query.Query;
@@ -102,10 +98,11 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             UtilTimerStack.push("Search Count Map");
             StatsGroupByComponent statsGroup = new StatsGroupByComponent(mapper, projectId);
             Collector hitCollector = new OneDimensionalDocIssueHitCollector(mapper.getDocumentConstant(), statsGroup,
-                    issueIndexManager.getIssueSearcher().getIndexReader(), issueFactory, fieldVisibilityManager, readerCache, fieldManager,
-                    projectManager);
-            searchProvider.searchAndSort((request != null) ? request.getQuery() : null, searcher, hitCollector,
-                    PagerFilter.getUnlimitedFilter());
+                    issueIndexManager.getIssueSearcher().getIndexReader(), issueFactory, fieldVisibilityManager, readerCache, fieldManager);
+
+            SearchQuery query = SearchQuery.create(request.getQuery(), searcher);
+
+            searchProvider.search(query, hitCollector);
             return statsGroup;
         } finally {
             UtilTimerStack.pop("Search Count Map");

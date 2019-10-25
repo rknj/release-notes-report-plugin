@@ -5,10 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.atlassian.jira.component.pico.ComponentManager;
 import org.apache.commons.collections.map.ListOrderedMap;
 
 import com.atlassian.configurable.ValuesGenerator;
-import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.customfields.statistics.CustomFieldStattable;
@@ -23,7 +23,7 @@ public class FilterStatisticsValuesGenerator implements ValuesGenerator {
     public static final String ALLFIXFOR = "allFixfor";
     public static final String FIXFOR = "fixfor";
 
-    CustomFieldManager customFieldManager = ComponentManager.getComponentInstanceOfType(CustomFieldManager.class);
+    CustomFieldManager customFieldManager = ComponentManager.getInstance().getComponentInstanceOfType(CustomFieldManager.class);
 
     static {
         Map<String, String> systemValuesTmp = new ListOrderedMap();
