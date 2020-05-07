@@ -35,6 +35,14 @@
                 <i18n>false</i18n>
                 <values class="org.jahia.modules.jira.reports.VersionOptionalValuesGenerator"/>
             </property>
+            <property>
+                <key>issueTypes</key>
+                <name>report.reportbyversionandcomponent.issueTypes</name>
+                <description>report.reportbyversionandcomponent.issueTypes.description</description>
+                <type>multiselect</type>
+                <i18n>false</i18n>
+                <values class="org.jahia.modules.jira.reports.IssueTypesValuesGenerator"/>
+            </property>
         </properties>
     </report>
 </atlassian-plugin>

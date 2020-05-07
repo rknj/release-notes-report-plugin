@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.search.Collector;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Scanned
@@ -134,7 +135,15 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             }
         }
 
-        Query query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString));
+        Query query = null;
+        if (params.get("issueTypes") instanceof String) {
+            query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), new String[]{(String) params.get("issueTypes")});
+        } else if (params.get("issueTypes") instanceof String[]) {
+            query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), (String[]) params.get("issueTypes"));
+        } else {
+            query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), null);
+        }
+
         SearchRequest req = new SearchRequest(query);
 
         final Map<String, Object> startingParams = new HashMap<String, Object>();
@@ -161,13 +170,14 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
     /**
      * Create the JQL query
      * 
-     * @param projectId
-     * @param versionId
+     * @param projectId project to focus on
+     * @param versionId version to focus on
+     * @param issueTypes Array of issue types
      * @return
      */
-    private Query buildQuery(final Long projectId, final Long versionId) {
+    private Query buildQuery(final Long projectId, final Long versionId, final String[] issueTypes) {
         final JqlQueryBuilder queryBuilder = JqlQueryBuilder.newBuilder();
-        final JqlClauseBuilder builder = queryBuilder.where().project(projectId);
+        final JqlClauseBuilder builder = queryBuilder.where().project(projectId).and().issueType(issueTypes);
 
         if (versionId != null) {
             if (VersionManager.NO_VERSIONS.equals(versionId.toString())) {
@@ -175,6 +185,10 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             } else {
                 builder.and().fixVersion().eq(versionId);
             }
+        }
+
+        if (issueTypes != null) {
+            builder.and().issueType(issueTypes);
         }
 
         queryBuilder.orderBy().issueType(SortOrder.DESC, true).issueKey(SortOrder.ASC);
