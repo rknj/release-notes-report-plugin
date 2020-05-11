@@ -1,6 +1,13 @@
 # Jira Report for Release Notes
 
-This report has been created in order to have a Release Notes with issues grouped by version and component 
+This report has been created to build a Release Notes with issues grouped by version and component.
+It is available from the reports tab on a Jira project.
+With the last version of the report (2.1.0) you have to select a version and the issue types you want to see in the report.
+
+## Commands
+- atlas-run: to run a local instance of Jira
+- atlas-package: to build the add-on
+- atlas-mvn: Maven command to use with Atlassina SDK
 
 ## Tutorial
 
