@@ -43,6 +43,18 @@
                 <i18n>false</i18n>
                 <values class="org.jahia.modules.jira.reports.IssueTypesValuesGenerator"/>
             </property>
+            <property>
+                <key>showLabels</key>
+                <name>report.reportbyversionandcomponent.showLabels</name>
+                <description>report.reportbyversionandcomponent.showLabels.description</description>
+                <type>checkbox</type>
+                <i18n>false</i18n>
+                <default>2</default>
+                <values>
+                    <value><key>1</key><value>true</value></value>
+                    <value><key>2</key><value>false</value></value>
+                </values>
+            </property>
         </properties>
     </report>
 </atlassian-plugin>

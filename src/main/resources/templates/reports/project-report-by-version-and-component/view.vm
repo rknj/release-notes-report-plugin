@@ -39,6 +39,16 @@
 		#end
 		#end
     </td>
+    <td width=5%>
+		#if ($showLabels && $issue.getLabels().size() > 0)
+			#set ($allLabels = $issue.getLabels())
+			#if ($allLabels.size() > 0)
+			#foreach ($label in $allLabels)
+				$label.getLabel()
+			#end
+		#end
+		#end
+    </td>
     <td width=15%>
 		#if ($issue.getFixVersions().size() > 0)
 			#set ($allVersions = $issue.getFixVersions())

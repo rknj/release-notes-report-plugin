@@ -28,7 +28,6 @@ import com.atlassian.query.Query;
 import com.atlassian.query.order.SortOrder;
 import com.atlassian.util.profiling.UtilTimerStack;
 import com.opensymphony.util.TextUtils;
-import org.apache.log4j.Logger;
 import org.apache.lucene.search.Collector;
 
 import java.util.HashMap;
@@ -37,8 +36,6 @@ import java.util.Map;
 
 @Scanned
 public class ProjectReportByVersionAndComponent extends AbstractReport {
-    private static final Logger log = Logger.getLogger(ProjectReportByVersionAndComponent.class);
-
     @JiraImport
     private final SearchProvider searchProvider;
     @JiraImport
@@ -119,6 +116,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
      * @throws Exception
      */
     public String generateReportHtml(ProjectActionSupport action, Map params) throws Exception {
+        // Get the version ID parameter value
         String versionIdString = (String) params.get("versionId");
         Version version = null;
         String releaseStatus = "Unreleased";
@@ -135,6 +133,14 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             }
         }
 
+        // Get the labels parameter value
+        Boolean showLabels = false;
+        if (params.get("showLabels") instanceof Boolean
+            && ((Boolean)params.get("showLabels")).booleanValue()) {
+            showLabels = true;
+        }
+
+        // Get the issue types parameter value
         Query query = null;
         if (params.get("issueTypes") instanceof String) {
             query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), new String[]{(String) params.get("issueTypes")});
@@ -155,6 +161,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
         startingParams.put("projectName", action.getSelectedProject().getName());
         startingParams.put("projectId", action.getSelectedProject().getId());
         startingParams.put("version", version);
+        startingParams.put("showLabels", showLabels);
         startingParams.put("releaseStatus", releaseStatus);
         startingParams.put("versionIdString", versionIdString);
         startingParams.put("customFieldManager", customFieldManager);
