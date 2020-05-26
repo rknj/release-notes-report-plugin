@@ -51,6 +51,14 @@
                 <default>false</default>
                 <i18n>false</i18n>
             </property>
+            <property>
+                <key>showSummary</key>
+                <name>report.reportbyversionandcomponent.showSummary</name>
+                <description>report.reportbyversionandcomponent.showSummary.description</description>
+                <type>checkbox</type>
+                <default>false</default>
+                <i18n>false</i18n>
+            </property>
         </properties>
     </report>
 </atlassian-plugin>
