@@ -2,6 +2,8 @@
 
 This report has been created to build a Release Notes with issues grouped by version and component.
 It is available from the reports tab on a Jira project.
+Please note that this report is based on the custom field "Changelog Notes" but if you do not have it it will display the summary.
+
 With the last version of the report (2.1.0) you have to select a version and the issue types you want to see in the report.
 
 ## Commands
