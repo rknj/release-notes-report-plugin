@@ -10,7 +10,7 @@
         <url>https://www.jahia.com/</url>
     </organization>
     <name>jira-report-plugin</name>
-    <description>Extends JIRA issue reports.</description>
+    <description>Extends JIRA issue reports by adding a new one grouping issues by component.</description>
     <scm>
 		<connection>scm:git:git@github.com:Jahia/jira-report-plugin.git</connection>
 	    <developerConnection>scm:git:git@github.com:Jahia/jira-report-plugin.git</developerConnection>

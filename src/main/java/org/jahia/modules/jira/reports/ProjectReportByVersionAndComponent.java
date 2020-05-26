@@ -133,13 +133,6 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             }
         }
 
-        // Get the labels parameter value
-        Boolean showLabels = false;
-        if (params.get("showLabels") instanceof Boolean
-            && ((Boolean)params.get("showLabels")).booleanValue()) {
-            showLabels = true;
-        }
-
         // Get the issue types parameter value
         Query query = null;
         if (params.get("issueTypes") instanceof String) {
@@ -161,7 +154,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
         startingParams.put("projectName", action.getSelectedProject().getName());
         startingParams.put("projectId", action.getSelectedProject().getId());
         startingParams.put("version", version);
-        startingParams.put("showLabels", showLabels);
+        startingParams.put("showLabels", params.get("showLabels"));
         startingParams.put("releaseStatus", releaseStatus);
         startingParams.put("versionIdString", versionIdString);
         startingParams.put("customFieldManager", customFieldManager);
