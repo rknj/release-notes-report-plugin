@@ -58,7 +58,7 @@
 			#if ($allVersions.size() > 0)
 			#foreach ($otherVersion in $allVersions)
 				#if (!$version.getName().equals($otherVersion.getName()))
-					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&reportKey=org.jahia.modules.jira.reports.jira-report-plugin%3Aproject-report-by-version-and-component&Next=Next">
+					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&reportKey=org.jahia.modules.jira.reports.release-notes-report-plugin%3Aproject-report-by-version-and-component&Next=Next">
 					$otherVersion.getName()
                     </a>
 				#end

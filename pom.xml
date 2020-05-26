@@ -3,18 +3,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.modules.jira.reports</groupId>
-    <artifactId>jira-report-plugin</artifactId>
+    <artifactId>release-notes-report-plugin</artifactId>
     <version>2.2.0-SNAPSHOT</version>
     <organization>
         <name>Jahia</name>
         <url>https://www.jahia.com/</url>
     </organization>
-    <name>jira-report-plugin</name>
-    <description>Extends JIRA issue reports by adding a new one grouping issues by component.</description>
+    <name>Release Notes Report Plugin</name>
+    <description>Extends JIRA issue reports by adding a new one grouping issues by component for a specific version. This report displays the value of a custom field (changelog notes) or the summary if the custom field does not exist.</description>
     <scm>
-		<connection>scm:git:git@github.com:Jahia/jira-report-plugin.git</connection>
-	    <developerConnection>scm:git:git@github.com:Jahia/jira-report-plugin.git</developerConnection>
-	    <url>scm:git:git@github.com:Jahia/jira-report-plugin.git</url>
+		<connection>scm:git:git@github.com:Jahia/release-notes-report-plugin.git</connection>
+	    <developerConnection>scm:git:git@github.com:Jahia/release-notes-report-plugin.git</developerConnection>
+	    <url>scm:git:git@github.com:Jahia/release-notes-report-plugin.git</url>
 	  <tag>HEAD</tag>
   </scm>
     <packaging>atlassian-plugin</packaging>
