@@ -77,17 +77,22 @@
 	#end
 #end
 
-#macro(issueLineHtml $issue)
+#macro(issueLineHtml $issue $addLink)
 	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
 		#set ($icon = "fa-paper-plane")
 		#if ($issue.getIssueTypeObject().getName().contains("Bug"))
 			#set ($icon = "fa-bug")	
 		#end
-		
+
+        #set ($link = "")
+        #if ($addLink.equals("true"))
+    		#set ($link = '<a href="https://jira.jahia.org/browse/' + $issue.getKey() + '">&nbsp;</a>')
+	    #end
+
 		#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
-	    	<li><span class="fa-li"><i class="fas $icon"></i></span>$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))</li>
+	        <li><span class="fa-li"><i class="fas $icon"></i></span>$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")) $link</li>
 	    #else
-	    	<li><span class="fa-li"><i class="fas $icon"></i></span><i>$issue.getSummary()*</i></li>
+	        <li><span class="fa-li"><i class="fas $icon"></i></span><i>$issue.getSummary()*</i> $link</li>
 	    #end
 	#end
 #end
@@ -157,7 +162,7 @@ $i18n.getText("common.words.none")
 <h3>$component.getName()</h3>
 <ul class="fa-ul">
 		    	#foreach ($issue in $issues)
-		    		#issueLineHtml ($issue)
+		    	    #issueLineHtml ($issue $addLink)
 		    	#end
 </ul>
 		    #end	
@@ -169,7 +174,7 @@ $i18n.getText("common.words.none")
 <h3>No components</h3>
 <ul class="fa-ul">
     	#foreach ($issue in $issues)
-    		#issueLineHtml ($issue)
+    	    #issueLineHtml ($issue $addLink)
     	#end
 </ul>
 	#end

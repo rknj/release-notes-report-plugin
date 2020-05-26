@@ -59,6 +59,14 @@
                 <default>false</default>
                 <i18n>false</i18n>
             </property>
+            <property>
+                <key>addLink</key>
+                <name>report.reportbyversionandcomponent.addLink</name>
+                <description>report.reportbyversionandcomponent.addLink.description</description>
+                <type>checkbox</type>
+                <default>false</default>
+                <i18n>false</i18n>
+            </property>
         </properties>
     </report>
 </atlassian-plugin>

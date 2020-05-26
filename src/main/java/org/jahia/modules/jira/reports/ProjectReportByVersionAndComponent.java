@@ -156,6 +156,7 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
         startingParams.put("version", version);
         startingParams.put("showLabels", params.get("showLabels"));
         startingParams.put("showSummary", params.get("showSummary"));
+        startingParams.put("addLink", params.get("addLink"));
         startingParams.put("releaseStatus", releaseStatus);
         startingParams.put("versionIdString", versionIdString);
         startingParams.put("customFieldManager", customFieldManager);
