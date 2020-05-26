@@ -9,7 +9,7 @@ With the last version of the report (2.1.0) you have to select a version and the
 ## Commands
 - atlas-run: to run a local instance of Jira
 - atlas-package: to build the add-on
-- atlas-mvn: Maven command to use with Atlassina SDK
+- atlas-mvn: Maven command to use with Atlassian SDK (ex: for release:prepare and release:perform)
 
 ## Tutorial
 
