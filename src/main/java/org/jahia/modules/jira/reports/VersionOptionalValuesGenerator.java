@@ -45,7 +45,7 @@ public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
                 while (unreleasedIter.hasNext())
                 {
                     Version version = unreleasedIter.next();
-                    unreleased.put(version.getId(), "    " + version.getName());
+                    unreleased.put(version.getId(), "- " + version.getName());
                 }
             }
 
@@ -68,7 +68,7 @@ public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
                 while (releasedIter.hasNext())
                 {
                     Version version = releasedIter.next();
-                    released.put(version.getId(), "    " + version.getName());
+                    released.put(version.getId(), "- " + version.getName());
                 }
             }
 
