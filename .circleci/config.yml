@@ -3,8 +3,25 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+
+references:
+  workdir: &workdir
+    working_directory: ~/source
+
+  persist-workspace: &persist-workspace
+    persist_to_workspace:
+      root: ~/source
+      paths:
+        - .
+
+  attach-workspace: &attach-workspace
+    attach_workspace:
+      at: .
+
 jobs:
-  build:
+  install:
+    <<: *workdir
+
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -14,28 +31,53 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
 
-    working_directory: ~/repo
+    resource_class: large
 
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
 
     steps:
+      - run:
+          name: "Install Atlassian SDK"
+          command: |
+            sudo sh -c 'echo "deb https://packages.atlassian.com/debian/atlassian-sdk-deb/ stable contrib" >>/etc/apt/sources.list'
+            wget https://packages.atlassian.com/api/gpg/key/public
+            sudo apt-key add public
+            sudo apt-get update
+            sudo apt-get install atlassian-plugin-sdk
+
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v2-dependencies-{{ checksum "pom.xml" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v2-dependencies-
 
-      - run: mvn dependency:go-offline
+      - run:
+          name: "Build artifacts"
+          command: |
+            atlas-package
 
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+          key: v2-dependencies-{{ checksum "pom.xml" }}
 
-      # run tests!
-      - run: mvn integration-test
+      - run:
+          name: "Copy artifacts"
+          command: |
+            mkdir /tmp/artifacts/
+            cp /home/circleci/source/target/*.jar /tmp/artifacts/
+
+      - store_artifacts:
+          path: /tmp/artifacts/
+
+      - *persist-workspace
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - install
