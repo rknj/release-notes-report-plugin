@@ -6,11 +6,11 @@ version: 2
 
 references:
   workdir: &workdir
-    working_directory: ~/source
+    working_directory: ~/module-source
 
   persist-workspace: &persist-workspace
     persist_to_workspace:
-      root: ~/source
+      root: ~/module-source
       paths:
         - .
 
@@ -19,23 +19,11 @@ references:
       at: .
 
 jobs:
-  install:
-    <<: *workdir
-
+  prepare:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:8-jdk
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
     resource_class: large
-
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
 
     steps:
       - run:
@@ -47,6 +35,15 @@ jobs:
             sudo apt-get update
             sudo apt-get install atlassian-plugin-sdk
 
+  install:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+    <<: *workdir
+
+    resource_class: large
+
+    steps:
       - checkout
 
       - restore_cache:
@@ -69,7 +66,7 @@ jobs:
           name: "Copy artifacts"
           command: |
             mkdir /tmp/artifacts/
-            cp /home/circleci/source/target/*.jar /tmp/artifacts/
+            cp /home/circleci/module-source/target/*.jar /tmp/artifacts/
 
       - store_artifacts:
           path: /tmp/artifacts/
