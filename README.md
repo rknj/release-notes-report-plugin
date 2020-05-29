@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/Jahia/release-notes-report-plugin/tree/master.svg?style=svg)](https://circleci.com/gh/Jahia/release-notes-report-plugin/tree/master)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/Jahia/release-notes-report-plugin)
+
 # Jira Report for Release Notes
 
 This report has been created to build a Release Notes with issues grouped by version and component.
