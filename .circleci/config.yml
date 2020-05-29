@@ -28,6 +28,7 @@ jobs:
     resource_class: large
 
     steps:
+      - checkout
       - restore_cache:
           keys:
             - v2-dependencies-{{ checksum "pom.xml" }}
@@ -49,8 +50,6 @@ jobs:
             - ~/.m2
             - /opt/atlassian-plugin-sdk
           key: v2-dependencies-{{ checksum "pom.xml" }}
-
-      - checkout
 
       - run:
           name: "Build artifacts"
