@@ -36,9 +36,9 @@ jobs:
       - run:
           name: "Install Atlassian SDK"
           command: |
-            wget https://marketplace.atlassian.com/download/plugins/atlassian-plugin-sdk-tgz -P /opt/
-            sudo tar -xvzf /opt/atlassian-plugin-sdk-4.0.tar.gz -C /opt/
-            sudo mv /opt/atlassian-plugin-sdk-4.0 /opt/atlassian-plugin-sdk
+            wget https://marketplace.atlassian.com/download/plugins/atlassian-plugin-sdk-tgz -P /tmp/
+            sudo tar -xvzf /tmp/atlassian-plugin-sdk-4.0.tar.gz -C /tmp/
+            sudo mv /tmp/atlassian-plugin-sdk-4.0 /tmp/atlassian-plugin-sdk
 
       - run:
           name: "Check Atlassian SDK installation"
@@ -48,7 +48,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-            - /opt/atlassian-plugin-sdk
+            - /tmp/atlassian-plugin-sdk
           key: v2-dependencies-{{ checksum "pom.xml" }}
 
       - run:
