@@ -1,4 +1,4 @@
-package org.jahia.modules.jira.reports;
+package com.arkanje.jira.reports;
 
 import com.atlassian.jira.bc.project.component.ProjectComponent;
 import com.atlassian.jira.component.ComponentAccessor;

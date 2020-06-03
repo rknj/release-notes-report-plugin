@@ -20,7 +20,7 @@
     </web-resource>
     <report name="Release Notes By Version And Component" i18n-name-key="project-report-by-version-and-component.name"
             key="project-report-by-version-and-component"
-            class="org.jahia.modules.jira.reports.ProjectReportByVersionAndComponent">
+            class="com.arkanje.jira.reports.ProjectReportByVersionAndComponent">
         <description key="project-report-by-version-and-component.description"/>
         <resource name="view" type="velocity"
                   location="/templates/reports/project-report-by-version-and-component/view.vm"/>
@@ -33,7 +33,7 @@
                 <description>report.reportbyversionandcomponent.versionId.description</description>
                 <type>select</type>
                 <i18n>false</i18n>
-                <values class="org.jahia.modules.jira.reports.VersionOptionalValuesGenerator"/>
+                <values class="com.arkanje.jira.reports.VersionOptionalValuesGenerator"/>
             </property>
             <property>
                 <key>issueTypes</key>
@@ -41,7 +41,7 @@
                 <description>report.reportbyversionandcomponent.issueTypes.description</description>
                 <type>multiselect</type>
                 <i18n>false</i18n>
-                <values class="org.jahia.modules.jira.reports.IssueTypesValuesGenerator"/>
+                <values class="com.arkanje.jira.reports.IssueTypesValuesGenerator"/>
             </property>
             <property>
                 <key>showLabels</key>

@@ -1,4 +1,4 @@
-package org.jahia.modules.jira.reports;
+package com.arkanje.jira.reports;
 
 import com.atlassian.jira.bc.filter.SearchRequestService;
 import com.atlassian.jira.bc.issue.search.SearchService;
@@ -31,7 +31,6 @@ import com.opensymphony.util.TextUtils;
 import org.apache.lucene.search.Collector;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Scanned

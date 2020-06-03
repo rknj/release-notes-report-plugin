@@ -1,4 +1,4 @@
-package org.jahia.modules.jira.reports;
+package com.arkanje.jira.reports;
 
 import com.atlassian.configurable.ValuesGenerator;
 import com.atlassian.jira.component.ComponentAccessor;

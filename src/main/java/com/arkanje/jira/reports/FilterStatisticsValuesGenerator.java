@@ -1,4 +1,4 @@
-package org.jahia.modules.jira.reports;
+package com.arkanje.jira.reports;
 
 import java.util.Collections;
 import java.util.Iterator;

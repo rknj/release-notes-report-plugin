@@ -1,4 +1,4 @@
-package org.jahia.modules.jira.reports;
+package com.arkanje.jira.reports;
 
 import com.atlassian.configurable.ValuesGenerator;
 import com.atlassian.jira.component.ComponentAccessor;
@@ -49,8 +49,6 @@ public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
                 }
             }
 
-
-
             Collection<Version> releasedVersionsCollection = versionManager.getVersionsReleased(projectGV.getLong("id"), false);
             List<Version> releasedVersions = new ArrayList<Version>( releasedVersionsCollection );
             Collections.sort(releasedVersions, new Comparator<Version>( ){
@@ -75,7 +73,6 @@ public class VersionOptionalValuesGenerator implements ValuesGenerator<Object>
             int size = unreleased.size() + released.size() + 1;
             Map<Long, String> versions = ListOrderedMap.decorate(new HashMap(size));
 
-            //versions.put(new Long(-1), i18n.getText("timetracking.nofixversion"));
             versions.putAll(unreleased);
             versions.putAll(released);
             return versions;

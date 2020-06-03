@@ -58,7 +58,7 @@
 			#if ($allVersions.size() > 0)
 			#foreach ($otherVersion in $allVersions)
 				#if (!$version.getName().equals($otherVersion.getName()))
-					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&reportKey=org.jahia.modules.jira.reports.release-notes-report-plugin%3Aproject-report-by-version-and-component&Next=Next">
+					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&reportKey=com.arkanje.jira.reports.release-notes-report-plugin%3Aproject-report-by-version-and-component&Next=Next">
 					$otherVersion.getName()
                     </a>
 				#end
@@ -86,7 +86,7 @@
 
         #set ($link = "")
         #if ($addLink.equals("true"))
-    		#set ($link = '<a href="https://jira.jahia.org/browse/' + $issue.getKey() + '">&nbsp;</a>')
+    		#set ($link = '<a href="'+$req.contextPath+'/browse/'+$issue.getKey()+'">&nbsp;</a>')
 	    #end
 
 		#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))

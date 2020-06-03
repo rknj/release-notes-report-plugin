@@ -1,4 +1,4 @@
-package org.jahia.modules.jira.conditions;
+package com.arkanje.jira.conditions;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.plugin.webfragment.conditions.AbstractWebCondition;
