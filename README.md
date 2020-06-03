@@ -1,3 +1,7 @@
+[![CircleCI](https://circleci.com/gh/rknj/release-notes-report-plugin/tree/master.svg?style=svg)](https://circleci.com/gh/rknj/release-notes-report-plugin/tree/master)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/rknj/release-notes-report-plugin)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 # Jira Report for Release Notes
 
 This report has been created to build a Release Notes with issues grouped by version and component.
