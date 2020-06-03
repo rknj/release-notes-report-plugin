@@ -4,7 +4,9 @@ This report has been created to build a Release Notes with issues grouped by ver
 It is available from the reports tab on a Jira project.
 Please note that this report is based on the custom field "Changelog Notes" but if you do not have it it will display the summary.
 
-With the last version of the report (2.1.0) you have to select a version and the issue types you want to see in the report.
+With the last version of the report (2.2.0) you will have the following options available:
+
+<img src="src/main/resources/images/report_config.png" alt="Report configuration" width="500"/>
 
 ## Commands
 - atlas-run: to run a local instance of Jira
