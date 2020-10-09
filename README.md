@@ -5,14 +5,19 @@
 # Jira Report for Release Notes
 
 This report has been created to build a Release Notes with issues grouped by version and component.
-It is available from the reports tab on a Jira project.
 Please note that this report is based on the custom field "Changelog Notes" but if you do not have it it will display the summary.
 
 With the last version of the report (2.2.0) you will have the following options available:
 
 <img src="src/main/resources/images/report_config.png" alt="Report configuration" width="500"/>
 
-## Commands
+## Installation
+
+- Get the latest version of the add-on and deploy it on your Jira instance
+- In the project report tab you’ll see a new entry **Release Notes By Version And Component** in the **Other** section
+
+
+## Useful commands
 - atlas-run: to run a local instance of Jira
 - atlas-package: to build the add-on
 - atlas-mvn: Maven command to use with Atlassian SDK (ex: for release:prepare and release:perform)
@@ -23,10 +28,7 @@ This module has been created following the Atlassian tutorial: https://developer
 
 ## Useful links
 
-https://developer.atlassian.com/server/jira/platform/report/
-
-https://docs.atlassian.com/software/jira/docs/api/6.4.12/
-
-https://developer.atlassian.com/server/framework/atlassian-sdk/packaging-and-releasing-your-plugin/
-
-https://developer.atlassian.com/server/jira/platform/object-configurable-parameters/
+- https://developer.atlassian.com/server/jira/platform/report/
+- https://docs.atlassian.com/software/jira/docs/api/6.4.12/
+- https://developer.atlassian.com/server/framework/atlassian-sdk/packaging-and-releasing-your-plugin/
+- https://developer.atlassian.com/server/jira/platform/object-configurable-parameters/
