@@ -7,7 +7,7 @@
 This report has been created to build a Release Notes with issues grouped by version and component.
 Please note that this report is based on the custom field "Changelog Notes" but if you do not have it it will display the summary.
 
-With the last version of the report (2.2.0) you will have the following options available:
+With the last version of the report you will have the following options available:
 
 <img src="src/main/resources/images/report_config.png" alt="Report configuration" width="500"/>
 
@@ -16,6 +16,7 @@ With the last version of the report (2.2.0) you will have the following options 
 - Get the latest version of the add-on and deploy it on your Jira instance
 - In the project report tab you’ll see a new entry **Release Notes By Version And Component** in the **Other** section
 
+<img src="img/report-access.png" alt="Report configuration" width="500"/>
 
 ## Useful commands
 - atlas-run: to run a local instance of Jira
