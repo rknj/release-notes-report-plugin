@@ -67,6 +67,31 @@
                 <default>false</default>
                 <i18n>false</i18n>
             </property>
+            <property>
+                <key>ChangelogField</key>
+                <name>report.reportbyversionandcomponent.changelog</name>
+                <description>report.reportbyversionandcomponent.changelog.description</description>
+                <type>multiselect</type>
+                <i18n>false</i18n>
+                <values class="com.arkanje.jira.reports.CustomFieldsValuesGenerator"/>
+            </property>
+            <property>
+                <key>bugHtml</key>
+                <name>report.reportbyversionandcomponent.bugHtml</name>
+                <description>report.reportbyversionandcomponent.bugHtml.description</description>
+                <type>string</type>
+                <default>&lt;li&gt;&lt;b&gt;__field_value__&lt;/b&gt;&lt;/li&gt;</default>
+                <i18n>false</i18n>
+            </property>
+            <property>
+                <key>otherHtml</key>
+                <name>report.reportbyversionandcomponent.otherHtml</name>
+                <description>report.reportbyversionandcomponent.otherHtml.description</description>
+                <type>string</type>
+                <default>&lt;li&gt;__field_value__&lt;/li&gt;</default>
+
+                <i18n>false</i18n>
+            </property>
         </properties>
     </report>
 </atlassian-plugin>
