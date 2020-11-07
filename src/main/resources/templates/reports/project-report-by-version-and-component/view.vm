@@ -4,7 +4,7 @@
     #set ($urlBrowsePrefix = "${req.contextPath}/browse/")
 #end
 
-#macro(issueLine $issue $currentComponent $showLabels $showSummary)
+#macro(issueLine $issue $changelogField $currentComponent $showLabels $showSummary)
 	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
 <tr>
 	<td width="2%"> </td>
@@ -21,8 +21,8 @@
 	        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
 	        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
 	    #end
-		#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
-			$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes"))
+		#if ($customFieldManager.getCustomFieldObjectByName($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
+			$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField))
 			#if ($showSummary.equals("true"))
 			    <br><img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle"><i>$issue.getSummary()</i>
 			#end
@@ -77,24 +77,22 @@
 	#end
 #end
 
-#macro(issueLineHtml $issue $addLink)
-	#if ((!$issue.getParentObject() && !$issue.getIssueTypeObject().getName().equals("Release Process")) || ($issue.getParentObject() && !$issue.getParentObject().getIssueTypeObject().name.equals("Release Process")))
-		#set ($icon = "fa-paper-plane")
-		#if ($issue.getIssueTypeObject().getName().contains("Bug"))
-			#set ($icon = "fa-bug")	
-		#end
+#macro(issueLineHtml $issue $addLink $changelogField $bugHtml $otherHtml)
+    #set ($block = $otherHtml)
+    #if ($issue.getIssueTypeObject().getName().contains("Bug"))
+        #set ($block = $bugHtml)
+    #end
 
-        #set ($link = "")
-        #if ($addLink.equals("true"))
-    		#set ($link = '<a href="'+$req.contextPath+'/browse/'+$issue.getKey()+'">&nbsp;</a>')
-	    #end
+    #set ($link = "")
+    #if ($addLink.equals("true"))
+        #set ($link = '<a href="'+$req.contextPath+'/browse/'+$issue.getKey()+'">&nbsp;</a>')
+    #end
 
-		#if ($customFieldManager.getCustomFieldObjectByName("Changelog Notes") && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")))
-	        <li><span class="fa-li"><i class="fas $icon"></i></span>$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName("Changelog Notes")) $link</li>
-	    #else
-	        <li><span class="fa-li"><i class="fas $icon"></i></span><i>$issue.getSummary()*</i> $link</li>
-	    #end
-	#end
+    #if ($customFieldManager.getCustomFieldObjectByName($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
+$block.replace("__field_value__", $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
+    #else
+$block.replace("__field_value__", $issue.getSummary()*)
+    #end
 #end
 
 #macro(filterTitle $value)
@@ -131,7 +129,7 @@ $i18n.getText("common.words.none")
             <td colspan="9">#statHeading ("components" $component $customFieldManager "") $component.getName()</td>
         </tr>
 		                #foreach ($issue in $issues)
-		                    #issueLine ($issue $component $showLabels $showSummary)
+		                    #issueLine ($issue $changelogField $component $showLabels $showSummary)
 		                #end
         			#end
             	#end
@@ -144,7 +142,7 @@ $i18n.getText("common.words.none")
             <td colspan="9">No components</td>
         </tr>
 	            #foreach ($issue in $issues)
-	            	#issueLine ($issue)
+	            	#issueLine ($issue $changelogField)
                 #end
             #end
     </tbody>
@@ -162,7 +160,7 @@ $i18n.getText("common.words.none")
 <h3>$component.getName()</h3>
 <ul class="fa-ul">
 		    	#foreach ($issue in $issues)
-		    	    #issueLineHtml ($issue $addLink)
+		    	    #issueLineHtml ($issue $addLink $changelogField $bugHtml $otherHtml)
 		    	#end
 </ul>
 		    #end	
@@ -174,7 +172,7 @@ $i18n.getText("common.words.none")
 <h3>No components</h3>
 <ul class="fa-ul">
     	#foreach ($issue in $issues)
-    	    #issueLineHtml ($issue $addLink)
+    	    #issueLineHtml ($issue $addLink $changelogField $bugHtml $otherHtml)
     	#end
 </ul>
 	#end
