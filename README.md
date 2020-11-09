@@ -9,6 +9,10 @@ With the last version of the report you will have the following options availabl
 
 <img src="src/main/resources/images/report_config.png" alt="Report configuration" width="500"/>
 
+## Introduction
+
+Read this article to know more about this project: https://medium.com/jahia-techblog/building-a-release-note-add-on-for-jira-65e02d9837aa
+
 ## Installation
 
 Please note that this report uses a custom field **Changelog Notes** and if you do not have it it will uses the summary field by default.
