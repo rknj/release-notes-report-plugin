@@ -91,7 +91,7 @@
     #if ($customFieldManager.getCustomFieldObjectByName($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
 $block.replace("__field_value__", $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
     #else
-$block.replace("__field_value__", $issue.getSummary()*)
+$block.replace("__field_value__", $issue.getSummary())
     #end
 #end
 
