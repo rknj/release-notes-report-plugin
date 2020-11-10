@@ -21,8 +21,8 @@
 	        <a href="$req.contextPath/browse/$issue.getParent().getString('key')" style="text-decoration: none; " title="$issue.getParent().getString('summary')"> $issue.getParent().getString('key')</a><br>
 	        <img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle">
 	    #end
-		#if ($customFieldManager.getCustomFieldObjectByName($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
-			$issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField))
+		#if ($customFieldManager.getCustomFieldObject($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObject($changelogField)))
+			$issue.getCustomFieldValue($customFieldManager.getCustomFieldObject($changelogField))
 			#if ($showSummary.equals("true"))
 			    <br><img src="$req.contextPath/images/icons/link_out_bot.gif" width="16" height="16" border="0" align="absmiddle"><i>$issue.getSummary()</i>
 			#end
@@ -88,8 +88,8 @@
         #set ($link = '<a href="'+$req.contextPath+'/browse/'+$issue.getKey()+'">&nbsp;</a>')
     #end
 
-    #if ($customFieldManager.getCustomFieldObjectByName($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
-$block.replace("__field_value__", $issue.getCustomFieldValue($customFieldManager.getCustomFieldObjectByName($changelogField)))
+    #if ($customFieldManager.getCustomFieldObject($changelogField) && $issue.getCustomFieldValue($customFieldManager.getCustomFieldObject($changelogField)))
+$block.replace("__field_value__", $issue.getCustomFieldValue($customFieldManager.getCustomFieldObject($changelogField)))
     #else
 $block.replace("__field_value__", $issue.getSummary())
     #end

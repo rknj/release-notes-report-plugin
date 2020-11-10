@@ -21,26 +21,26 @@ import java.util.*;
 
 public class CustomFieldsValuesGenerator implements ValuesGenerator<Object>
 {
-private final JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
+    private final JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext();
 
-public Map getValues(Map params)
-{
-GenericValue projectGV = (GenericValue) params.get("project");
+    public Map getValues(Map params)
+    {
+        GenericValue projectGV = (GenericValue) params.get("project");
 
-try
-{
-final ListOrderedMap values = new ListOrderedMap();
-Collection<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects();
-for (CustomField customField : customFields)
-{
-values.put(customField.getId(), customField.getName());
-}
+        try
+        {
+            final ListOrderedMap values = new ListOrderedMap();
+            Collection<CustomField> customFields = ComponentAccessor.getCustomFieldManager().getCustomFieldObjects();
+            for (CustomField customField : customFields)
+            {
+                values.put(customField.getId(), customField.getName());
+            }
 
-return values;
-}
-catch (Exception e)
-{
-throw new RuntimeException(e);
-}
-}
+            return values;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 }

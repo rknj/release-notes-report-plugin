@@ -68,10 +68,10 @@
                 <i18n>false</i18n>
             </property>
             <property>
-                <key>ChangelogField</key>
+                <key>changelogField</key>
                 <name>report.reportbyversionandcomponent.changelog</name>
                 <description>report.reportbyversionandcomponent.changelog.description</description>
-                <type>multiselect</type>
+                <type>select</type>
                 <i18n>false</i18n>
                 <values class="com.arkanje.jira.reports.CustomFieldsValuesGenerator"/>
             </property>
@@ -89,7 +89,6 @@
                 <description>report.reportbyversionandcomponent.otherHtml.description</description>
                 <type>string</type>
                 <default>&lt;li&gt;__field_value__&lt;/li&gt;</default>
-
                 <i18n>false</i18n>
             </property>
         </properties>

@@ -138,37 +138,39 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
             query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), new String[]{(String) params.get("issueTypes")});
         } else if (params.get("issueTypes") instanceof String[]) {
             query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), (String[]) params.get("issueTypes"));
-        } else {
-            query = buildQuery(action.getSelectedProjectId(), new Long(versionIdString), null);
         }
 
-        SearchRequest req = new SearchRequest(query);
+        if (query != null) {
+            SearchRequest req = new SearchRequest(query);
 
-        final Map<String, Object> startingParams = new HashMap<String, Object>();
-        startingParams.put("action", action);
-        startingParams.put("statsGroup", searchMapIssueKeys(req, action.getLoggedInUser(),
-                new FixForVersionStatisticsMapper(versionManager), action.getSelectedProjectId()));
-        startingParams.put("searchRequest", req);
-        startingParams.put("query", query);
-        startingParams.put("projectName", action.getSelectedProject().getName());
-        startingParams.put("projectId", action.getSelectedProject().getId());
-        startingParams.put("version", version);
-        startingParams.put("showLabels", params.get("showLabels"));
-        startingParams.put("showSummary", params.get("showSummary"));
-        startingParams.put("addLink", params.get("addLink"));
-        startingParams.put("changelogField", params.get("changelogField"));
-        startingParams.put("bugHtml", params.get("bugHtml"));
-        startingParams.put("otherHtml", params.get("otherHtml"));
-        startingParams.put("releaseStatus", releaseStatus);
-        startingParams.put("versionIdString", versionIdString);
-        startingParams.put("customFieldManager", customFieldManager);
-        startingParams.put("fieldVisibility", fieldVisibilityManager);
-        startingParams.put("searchService", searchService);
-        startingParams.put("portlet", this);
-        startingParams.put("formatter", formatter);
-        startingParams.put("versionManager", versionManager);
+            final Map<String, Object> startingParams = new HashMap<String, Object>();
+            startingParams.put("action", action);
+            startingParams.put("statsGroup", searchMapIssueKeys(req, action.getLoggedInUser(),
+                    new FixForVersionStatisticsMapper(versionManager), action.getSelectedProjectId()));
+            startingParams.put("searchRequest", req);
+            startingParams.put("query", query);
+            startingParams.put("projectName", action.getSelectedProject().getName());
+            startingParams.put("projectId", action.getSelectedProject().getId());
+            startingParams.put("version", version);
+            startingParams.put("showLabels", params.get("showLabels"));
+            startingParams.put("showSummary", params.get("showSummary"));
+            startingParams.put("addLink", params.get("addLink"));
+            startingParams.put("changelogField", params.get("changelogField"));
+            startingParams.put("bugHtml", params.get("bugHtml"));
+            startingParams.put("otherHtml", params.get("otherHtml"));
+            startingParams.put("releaseStatus", releaseStatus);
+            startingParams.put("versionIdString", versionIdString);
+            startingParams.put("customFieldManager", customFieldManager);
+            startingParams.put("fieldVisibility", fieldVisibilityManager);
+            startingParams.put("searchService", searchService);
+            startingParams.put("portlet", this);
+            startingParams.put("formatter", formatter);
+            startingParams.put("versionManager", versionManager);
 
-        return descriptor.getHtml("view", startingParams);
+            return descriptor.getHtml("view", startingParams);
+        } else {
+            return "<span class='errMsg'>Select at elast one issue type and re-run this report.</span>";
+        }
     }
 
     /**
@@ -181,23 +183,28 @@ public class ProjectReportByVersionAndComponent extends AbstractReport {
      */
     private Query buildQuery(final Long projectId, final Long versionId, final String[] issueTypes) {
         final JqlQueryBuilder queryBuilder = JqlQueryBuilder.newBuilder();
-        final JqlClauseBuilder builder = queryBuilder.where().project(projectId).and().issueType(issueTypes);
-
-        if (versionId != null) {
-            if (VersionManager.NO_VERSIONS.equals(versionId.toString())) {
-                builder.and().fixVersionIsEmpty();
-            } else {
-                builder.and().fixVersion().eq(versionId);
-            }
-        }
 
         if (issueTypes != null) {
-            builder.and().issueType(issueTypes);
+            final JqlClauseBuilder builder = queryBuilder.where().project(projectId).and().issueType(issueTypes);
+
+            if (versionId != null) {
+                if (VersionManager.NO_VERSIONS.equals(versionId.toString())) {
+                    builder.and().fixVersionIsEmpty();
+                } else {
+                    builder.and().fixVersion().eq(versionId);
+                }
+            }
+
+            if (issueTypes != null) {
+                builder.and().issueType(issueTypes);
+            }
+
+            queryBuilder.orderBy().issueType(SortOrder.DESC, true).issueKey(SortOrder.ASC);
+
+            return queryBuilder.buildQuery();
+        } else {
+            return null;
         }
-
-        queryBuilder.orderBy().issueType(SortOrder.DESC, true).issueKey(SortOrder.ASC);
-
-        return queryBuilder.buildQuery();
     }
 
 }
