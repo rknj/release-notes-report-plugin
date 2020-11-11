@@ -24,6 +24,14 @@ To install this add-on follow these instructions:
 
 - After a click on this entry, you'll see the configuration panel (see above)
 
+## Usage
+
+### New configuration fiels
+
+New fields have been added to make the report more generic. Now you can choose the custom field to use for the changelog and add HTML templates for the textarea content.
+
+<img src="img/new-config.png" alt="Report configuration" width="500"/>
+
 ## Tutorial
 
 This module has been created following the Atlassian tutorial: https://developer.atlassian.com/server/jira/platform/creating-a-jira-report/
