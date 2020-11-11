@@ -2,6 +2,8 @@
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/rknj/release-notes-report-plugin)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+<img src="img/logo.png" /> 
+
 # Jira Report for Release Notes
 
 This report has been created to build a Release Notes with issues grouped by version and component.
@@ -26,7 +28,7 @@ To install this add-on follow these instructions:
 
 ## Usage
 
-### New configuration fiels
+### New configuration fields
 
 New fields have been added to make the report more generic. Now you can choose the custom field to use for the changelog and add HTML templates for the textarea content.
 
