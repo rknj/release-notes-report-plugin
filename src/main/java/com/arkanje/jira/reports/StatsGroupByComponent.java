@@ -31,32 +31,40 @@ public class StatsGroupByComponent extends StatsGroup {
         issuesWithoutComponents.put(version, new ArrayList<Issue>());
 
         Map<ProjectComponent, Collection<Issue>> map = new HashMap<ProjectComponent, Collection<Issue>>();
-        Iterator<Issue> it = ((Collection<Issue>) this.get(version)).iterator();
-        while (it.hasNext()) {
-            Issue issue = it.next();
+        if (this.get(version) != null) {
+            Iterator<Issue> it = ((Collection<Issue>) this.get(version)).iterator();
+            while (it.hasNext()) {
+                Issue issue = it.next();
 
-            if (issue.getComponents().size() > 0) {
-                // Only map the first component with the issue
-                Iterator<ProjectComponent> componentIterator = issue.getComponents().iterator();
-                ProjectComponent component = componentIterator.next();
-                if (map.containsKey(component)) {
-                    map.get(component).add(issue);
+                if (issue.getComponents().size() > 0) {
+                    // Only map the first component with the issue
+                    Iterator<ProjectComponent> componentIterator = issue.getComponents().iterator();
+                    ProjectComponent component = componentIterator.next();
+                    if (map.containsKey(component)) {
+                        map.get(component).add(issue);
+                    } else {
+                        map.put(component, new ArrayList<Issue>(){{add(issue);}});
+                    }
                 } else {
-                    map.put(component, new ArrayList<Issue>(){{add(issue);}});
+                    issuesWithoutComponents.get(version).add(issue);
                 }
-            } else {
-                issuesWithoutComponents.get(version).add(issue);
             }
+            componentsMap.put(version, map);
         }
-        componentsMap.put(version, map);
     }
 
     public Collection<ProjectComponent> getComponents(Version version) {
-        return componentsMap.get(version).keySet();
+        if (componentsMap.get(version) != null) {
+            return componentsMap.get(version).keySet();
+        }
+        return null;
     }
 
     public Collection<Issue> getIssuesByComponent(Version version, ProjectComponent component) throws Exception {
-        return componentsMap.get(version).get(component);
+        if (componentsMap.get(version) != null) {
+            return componentsMap.get(version).get(component);
+        }
+        return null;
     }
 
     public Collection<Issue> getIssuesWithoutComponent(Version version) {
