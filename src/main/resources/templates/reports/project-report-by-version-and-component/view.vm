@@ -54,11 +54,14 @@
     </td>
     <td width=15%>
 		#if ($issue.getFixVersions().size() > 0)
+            #set ($parameters = ${req.queryString})
+            #set( $regex = "versionId=[0-9]*&" )
+            #set( $commonParameters = $parameters.replaceAll( $regex, "" ) )
 			#set ($allVersions = $issue.getFixVersions())
 			#if ($allVersions.size() > 0)
 			#foreach ($otherVersion in $allVersions)
 				#if (!$version.getName().equals($otherVersion.getName()))
-					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&reportKey=com.arkanje.jira.reports.release-notes-report-plugin%3Aproject-report-by-version-and-component&Next=Next">
+					<a href="${req.contextPath}/secure/ConfigureReport.jspa?versionId=$otherVersion.getId()&selectedProjectId=$projectId&$commonParameters">
 					$otherVersion.getName()
                     </a>
 				#end
