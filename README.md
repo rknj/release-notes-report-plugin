@@ -2,7 +2,7 @@
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/rknj/release-notes-report-plugin)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-<img src="img/logo.png" /> 
+<a href="https://marketplace.atlassian.com/apps/1223903/release-notes-report-plugin?hosting=server&tab=overview"><img src="img/logo.png" /></a>
 
 # Jira Report for Release Notes
 
