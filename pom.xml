@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.arkanje.jira.reports</groupId>
     <artifactId>release-notes-report-plugin</artifactId>
-    <version>release-notes-report-plugin-2.7.0</version>
+    <version>2.7.0-SNAPSHOT</version>
     <organization>
         <name>Michael de Checchi</name>
         <url>https://www.arkanje.com/</url>
@@ -15,7 +15,7 @@
 		<connection>scm:git:git@github.com:rknj/release-notes-report-plugin.git</connection>
 	    <developerConnection>scm:git:git@github.com:rknj/release-notes-report-plugin.git</developerConnection>
 	    <url>scm:git:git@github.com:rknj/release-notes-report-plugin.git</url>
-	  <tag>release-notes-report-plugin-2.7.0</tag>
+	  <tag>HEAD</tag>
   </scm>
     <packaging>atlassian-plugin</packaging>
     <dependencies>
